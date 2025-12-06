@@ -3988,7 +3988,7 @@ Color=Color3.new(1,1,1),
 Transparency=0,
 },{
 ac("UIGradient",{
-Color=ColorSequence.new(Color3.fromHex"ffffff", Color3.fromHex"000000")
+Color=ColorSequence.new(Color3.fromHex"ffffff", Color3.fromHex"111111")
 })
 }),
 ai,
