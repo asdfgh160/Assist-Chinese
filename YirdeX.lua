@@ -3988,7 +3988,7 @@ Color=Color3.new(1,1,1),
 Transparency=0,
 },{
 ac("UIGradient",{
-Color=ColorSequence.new(Color3.fromHex"ffffff", Color3.fromHex"111111")
+Color=ColorSequence.new(Color3.fromHex"ffffff", Color3.fromHex"666666")
 })
 }),
 ai,
@@ -4092,7 +4092,7 @@ OnlyMobile=ao.OnlyMobile,
 CornerRadius=ao.CornerRadius or UDim.new(1,0),
 StrokeThickness=ao.StrokeThickness or 2,
 Color=ao.Color
-or ColorSequence.new(Color3.fromHex"ffffff", Color3.fromHex"000000")
+or ColorSequence.new(Color3.fromHex"ffffff", Color3.fromHex"666666")
 }
 
 
