@@ -111,7 +111,7 @@ Tabs.Stamina_Settings:Toggle({
 })
 
 Tabs.Stamina_Settings:Slider({
-    Title = "最大体力,
+    Title = "最大体力",
     Step = 1,
     Value = {Min = 1, Max = 500, Default = maxStaminaValue},
     Suffix = " Max",
