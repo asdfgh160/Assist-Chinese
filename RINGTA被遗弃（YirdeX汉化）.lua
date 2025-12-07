@@ -360,7 +360,7 @@ Tabs.Esp:Toggle({
 })
 
 Tabs.Esp:Toggle({
-    Title = "透视Bloxy可乐道具",
+    Title = "透视可乐道具",
     Default = false,
     Callback = function(state)
         espEnabledBloxy = state
