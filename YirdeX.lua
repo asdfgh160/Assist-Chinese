@@ -4189,7 +4189,7 @@ ac("UIScale",{
 Scale=1,
 }),
 ac("UICorner",{
-CornerRadius=UDim.new(0,0)
+CornerRadius=UDim.new(0,10)
 }),
 ac("UIStroke",{
 Thickness=2,
