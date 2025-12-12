@@ -1492,7 +1492,7 @@ function aa.New(ae,af,ag,ah,ai,aj,ak,al)
 ah=ah or"Primary"
 local am=al or(not ak and 10 or 99)
 local an
-if af and af~=""then
+if af and af ~= "" then
 an=ac("ImageLabel",{
 Image=ab.Icon(af)[1],
 ImageRectSize=ab.Icon(af)[2].ImageRectSize,
