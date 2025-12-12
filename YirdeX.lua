@@ -9623,14 +9623,14 @@ ZIndex=98,
 Active=false,
 },{
 aj("ImageLabel",{
-Size=UDim2.new(0,70,0,70),
-Image=ai.Icon"expand"[1],
-ImageRectOffset=ai.Icon"expand"[2].ImageRectPosition,
-ImageRectSize=ai.Icon"expand"[2].ImageRectSize,
-BackgroundTransparency=1,
-Position=UDim2.new(0.5,0,0.5,0),
-AnchorPoint=Vector2.new(0.5,0.5),
-ImageTransparency=1,
+    Size = UDim2.new(0, 70, 0, 70),
+    Image = a1.Icon"expand"[1] or "",
+    ImageRectOffset = (a1.Icon"expand"[2] and a1.Icon"expand"[2].ImageRectPosition) or Vector2.new(0, 0),
+    ImageRectSize = (a1.Icon"expand"[2] and a1.Icon"expand"[2].ImageRectSize) or Vector2.new(70, 70),
+    BackgroundTransparency = 1,
+    Position = UDim2.new(0.5, 0, 0.5, 0),
+    AnchorPoint = Vector2.new(0.5, 0.5),
+    ImageTransparency = 1,
 }),
 })
 
