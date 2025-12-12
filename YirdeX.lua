@@ -3978,17 +3978,33 @@ BackgroundColor3=Color3.new(0,0,0),
 
 
 
-ac("UICorner",{
-CornerRadius=UDim.new(1,0)
+ac("UICorner", {
+    CornerRadius = UDim.new(0, 0)
 }),
-ac("UIStroke",{
-Thickness=1,
-ApplyStrokeMode="Border",
-Color=Color3.new(1,1,1),
-Transparency=0,
-},{
-ac("UIGradient",{
-Color=ColorSequence.new(Color3.fromHex"FF0000", Color3.fromHex"FF7F00")
+
+ac("UIStroke", {
+    Thickness = 2,
+    ApplyStrokeMode = "Border",
+    Color = Color3.new(1, 1, 1),
+    Transparency = 0.1,
+}, {
+    ac("UIGradient", {
+Color=ColorSequence.new({
+    ColorSequenceKeypoint.new(0,    Color3.fromHex"FF0000"),  
+    ColorSequenceKeypoint.new(0.08, Color3.fromHex"FF3300"),  
+    ColorSequenceKeypoint.new(0.16, Color3.fromHex"FF6600"),  
+    ColorSequenceKeypoint.new(0.24, Color3.fromHex"FF9900"),  
+    ColorSequenceKeypoint.new(0.32, Color3.fromHex"FFCC00"),  
+    ColorSequenceKeypoint.new(0.40, Color3.fromHex"FFFF00"),  
+    ColorSequenceKeypoint.new(0.48, Color3.fromHex"99FF00"),  
+    ColorSequenceKeypoint.new(0.56, Color3.fromHex"33FF00"),  
+    ColorSequenceKeypoint.new(0.64, Color3.fromHex"00FF66"),  
+    ColorSequenceKeypoint.new(0.72, Color3.fromHex"00FFCC"),  
+    ColorSequenceKeypoint.new(0.80, Color3.fromHex"00CCFF"),  
+    ColorSequenceKeypoint.new(0.88, Color3.fromHex"0066FF"),  
+    ColorSequenceKeypoint.new(0.96, Color3.fromHex"6600FF"),  
+    ColorSequenceKeypoint.new(1,    Color3.fromHex"CC00FF")   
+})
 })
 }),
 ai,
@@ -4092,7 +4108,22 @@ OnlyMobile=ao.OnlyMobile,
 CornerRadius=ao.CornerRadius or UDim.new(1,0),
 StrokeThickness=ao.StrokeThickness or 2,
 Color=ao.Color
-or ColorSequence.new(Color3.fromHex"FF0000", Color3.fromHex"FF7F00")
+or ColorSequence.new({
+    ColorSequenceKeypoint.new(0,    Color3.fromHex"FF0000"),  
+    ColorSequenceKeypoint.new(0.08, Color3.fromHex"FF3300"),  
+    ColorSequenceKeypoint.new(0.16, Color3.fromHex"FF6600"),  
+    ColorSequenceKeypoint.new(0.24, Color3.fromHex"FF9900"),  
+    ColorSequenceKeypoint.new(0.32, Color3.fromHex"FFCC00"),  
+    ColorSequenceKeypoint.new(0.40, Color3.fromHex"FFFF00"),  
+    ColorSequenceKeypoint.new(0.48, Color3.fromHex"99FF00"),  
+    ColorSequenceKeypoint.new(0.56, Color3.fromHex"33FF00"),  
+    ColorSequenceKeypoint.new(0.64, Color3.fromHex"00FF66"),  
+    ColorSequenceKeypoint.new(0.72, Color3.fromHex"00FFCC"),  
+    ColorSequenceKeypoint.new(0.80, Color3.fromHex"00CCFF"),  
+    ColorSequenceKeypoint.new(0.88, Color3.fromHex"0066FF"),  
+    ColorSequenceKeypoint.new(0.96, Color3.fromHex"6600FF"),  
+    ColorSequenceKeypoint.new(1,    Color3.fromHex"CC00FF")   
+})
 }
 
 
