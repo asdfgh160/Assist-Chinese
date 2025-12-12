@@ -1492,20 +1492,42 @@ function aa.New(ae,af,ag,ah,ai,aj,ak,al)
 ah=ah or"Primary"
 local am=al or(not ak and 10 or 99)
 local an
+local an
 if af and af ~= "" then
-an=ac("ImageLabel",{
-Image=ab.Icon(af)[1],
-ImageRectSize=ab.Icon(af)[2].ImageRectSize,
-ImageRectOffset=ab.Icon(af)[2].ImageRectPosition,
-Size=UDim2.new(0,21,0,21),
-BackgroundTransparency=1,
-ImageColor3=ah=="White"and Color3.new(0,0,0)or nil,
-ImageTransparency=ah=="White"and.4 or 0,
-ThemeTag={
-ImageColor3=ah~="White"and"Icon"or nil,
-}
-})
-end
+    local success, iconData = pcall(function()
+        return ab.Icon(af)
+    end)
+    if success and iconData and type(iconData) == "table" then
+        local imageId = iconData[1]
+        local rectInfo = iconData[2]
+        if imageId and rectInfo then
+            an = ac("ImageLabel", {
+                Image = imageId,
+                ImageRectSize = rectInfo.ImageRectSize or Vector2.new(21, 21),
+                ImageRectOffset = rectInfo.ImageRectPosition or Vector2.new(0, 0),
+                Size = UDim2.new(0, 21, 0, 21),
+                BackgroundTransparency = 1,
+                ImageColor3 = ah == "White" and Color3.new(0, 0, 0) or nil,
+                ImageTransparency = ah == "White" and 0.4 or 0,
+                ThemeTag = {
+                    ImageColor3 = ah == "White" and "Icon" or nil,
+                }
+            })
+        else
+            an = ac("ImageLabel", {
+                Size = UDim2.new(0, 21, 0, 21),
+                BackgroundTransparency = 1,
+                ImageTransparency = 1
+            })
+        end
+    else
+        an = ac("ImageLabel", {
+            Size = UDim2.new(0, 21, 0, 21),
+            BackgroundTransparency = 1,
+            ImageTransparency = 1
+        })
+    end
+               end
 
 local ao=ac("TextButton",{
 Size=UDim2.new(0,0,1,0),
