@@ -1580,13 +1580,13 @@ function redzlib:MakeWindow(Configs)
 	local Window, FirstTab = {}, false
 	function Window:CloseBtn()
 		local Dialog = Window:Dialog({
-			Title = "压力",
-			Text = "你想要关闭脚本吗？",
+			Title = "Yirdex脚本中心",
+			Text = "你确定要关闭Yirdex脚本中心？如果你要关闭的话，我不拦着你👋",
 			Options = {
 				{"确认", function()
 					ScreenGui:Destroy()
 				end},
-				{"反回"}
+				{"取消"}
 			}
 		})
 	end
