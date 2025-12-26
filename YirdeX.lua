@@ -11019,7 +11019,7 @@ if not ar.IgnoreAlerts then
 ar:SetToTheCenter()
 ar:Dialog{
 
-Title="YirdeX-被遗弃脚本",
+Title="YirdeX-脚本中心",
 Content="是否要关闭窗口",
 Buttons={
 {
