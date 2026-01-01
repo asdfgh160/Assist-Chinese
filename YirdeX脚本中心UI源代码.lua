@@ -12,41 +12,42 @@ local redzlib = {
 	Themes = {
 		Darker = {
 			["Color Hub 1"] = ColorSequence.new({
-				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(25, 25, 25)),
-				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(32.5, 32.5, 32.5)),
-				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(25, 25, 25))
+				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(30, 80, 150)),
+				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(50, 120, 200)),
+				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(30, 80, 150))
 			}),
-			["Color Hub 2"] = Color3.fromRGB(30, 30, 30),
-			["Color Stroke"] = Color3.fromRGB(40, 40, 40),
-			["Color Theme"] = Color3.fromRGB(88, 101, 242),
-			["Color Text"] = Color3.fromRGB(243, 243, 243),
-			["Color Dark Text"] = Color3.fromRGB(180, 180, 180)
+			["Color Hub 2"] = Color3.fromRGB(40, 90, 160),
+			["Color Stroke"] = Color3.fromRGB(50, 100, 170),
+			["Color Theme"] = Color3.fromRGB(80, 140, 220),
+			["Color Text"] = Color3.fromRGB(250, 250, 250),
+			["Color Dark Text"] = Color3.fromRGB(200, 210, 220)
 		},
 		Dark = {
 			["Color Hub 1"] = ColorSequence.new({
-				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(40, 40, 40)),
-				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(47.5, 47.5, 47.5)),
-				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(40, 40, 40))
+				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(200, 100, 30)),
+				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255, 130, 50)),
+				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(200, 100, 30))
 			}),
-			["Color Hub 2"] = Color3.fromRGB(45, 45, 45),
-			["Color Stroke"] = Color3.fromRGB(65, 65, 65),
-			["Color Theme"] = Color3.fromRGB(65, 150, 255),
-			["Color Text"] = Color3.fromRGB(245, 245, 245),
-			["Color Dark Text"] = Color3.fromRGB(190, 190, 190)
+			["Color Hub 2"] = Color3.fromRGB(210, 110, 40),
+			["Color Stroke"] = Color3.fromRGB(220, 120, 50),
+			["Color Theme"] = Color3.fromRGB(255, 150, 70),
+			["Color Text"] = Color3.fromRGB(250, 250, 250),
+			["Color Dark Text"] = Color3.fromRGB(210, 210, 210)
 		},
 		Purple = {
 			["Color Hub 1"] = ColorSequence.new({
-				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(27.5, 25, 30)),
-				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(32.5, 32.5, 32.5)),
-				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(27.5, 25, 30))
+				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(30, 120, 80)),
+				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(50, 160, 100)),
+				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(30, 120, 80))
 			}),
-			["Color Hub 2"] = Color3.fromRGB(30, 30, 30),
-			["Color Stroke"] = Color3.fromRGB(40, 40, 40),
-			["Color Theme"] = Color3.fromRGB(150, 0, 255),
-			["Color Text"] = Color3.fromRGB(240, 240, 240),
-			["Color Dark Text"] = Color3.fromRGB(180, 180, 180)
+			["Color Hub 2"] = Color3.fromRGB(40, 130, 90),
+			["Color Stroke"] = Color3.fromRGB(50, 140, 100),
+			["Color Theme"] = Color3.fromRGB(70, 180, 120),
+			["Color Text"] = Color3.fromRGB(250, 250, 250),
+			["Color Dark Text"] = Color3.fromRGB(200, 220, 210)
 		}
-	},
+	}
+}
 	Info = {
 		Version = "1.1.0"
 	},
@@ -1580,13 +1581,13 @@ function redzlib:MakeWindow(Configs)
 	local Window, FirstTab = {}, false
 	function Window:CloseBtn()
 		local Dialog = Window:Dialog({
-			Title = "Yirdex脚本中心",
-			Text = "你确定要关闭Yirdex脚本中心？如果你要关闭的话，我不拦着你👋",
+			Title = "压力",
+			Text = "你想要关闭脚本吗？",
 			Options = {
 				{"确认", function()
 					ScreenGui:Destroy()
 				end},
-				{"取消"}
+				{"反回"}
 			}
 		})
 	end
