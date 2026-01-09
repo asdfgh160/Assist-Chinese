@@ -10,29 +10,29 @@ local PlayerMouse = Player:GetMouse()
 
 local redzlib = {
 	Themes = {
-		Darker = {
-	["Color Hub 1"] = ColorSequence.new({
-		ColorSequenceKeypoint.new(0.00, Color3.fromRGB(10, 15, 35)),     
-		ColorSequenceKeypoint.new(0.50, Color3.fromRGB(20, 30, 60)),    
-		ColorSequenceKeypoint.new(1.00, Color3.fromRGB(10, 15, 35))
-	}),
-	["Color Hub 2"] = Color3.fromRGB(25, 35, 65), 
-	["Color Stroke"] = Color3.fromRGB(40, 60, 100),
-["Color Theme"] = Color3.fromRGB(100, 180, 255),  
-	["Color Text"] = Color3.fromRGB(220, 230, 255), 
-	["Color Dark Text"] = Color3.fromRGB(150, 170, 200)  
-		},
-		Dark = {
+		默认 = {
 			["Color Hub 1"] = ColorSequence.new({
-				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(200, 100, 30)),
-				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255, 130, 50)),
-				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(200, 100, 30))
+				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(25, 25, 25)),
+				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(32.5, 32.5, 32.5)),
+				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(25, 25, 25))
 			}),
-			["Color Hub 2"] = Color3.fromRGB(210, 110, 40),
-			["Color Stroke"] = Color3.fromRGB(220, 120, 50),
-			["Color Theme"] = Color3.fromRGB(255, 150, 70),
-			["Color Text"] = Color3.fromRGB(245, 245, 245),
-			["Color Dark Text"] = Color3.fromRGB(190, 190, 190)
+			["Color Hub 2"] = Color3.fromRGB(30, 30, 30),
+			["Color Stroke"] = Color3.fromRGB(40, 40, 40),
+			["Color Theme"] = Color3.fromRGB(88, 101, 242),
+			["Color Text"] = Color3.fromRGB(243, 243, 243),
+			["Color Dark Text"] = Color3.fromRGB(180, 180, 180)
+		},
+		红色 = {
+["Color Hub 1"] = ColorSequence.new({
+    ColorSequenceKeypoint.new(0.00, Color3.fromRGB(50, 20, 20)),     
+    ColorSequenceKeypoint.new(0.50, Color3.fromRGB(100, 40, 40)),   
+    ColorSequenceKeypoint.new(1.00, Color3.fromRGB(50, 20, 20))
+}),
+["Color Hub 2"] = Color3.fromRGB(70, 25, 25),                        
+["Color Stroke"] = Color3.fromRGB(120, 40, 40),               
+["Color Theme"] = Color3.fromRGB(220, 60, 60),                  
+["Color Text"] = Color3.fromRGB(255, 210, 210),                      
+["Color Dark Text"] = Color3.fromRGB(180, 100, 100)                  
 		},
 		Purple = {
 			["Color Hub 1"] = ColorSequence.new({
