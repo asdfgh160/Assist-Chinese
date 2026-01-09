@@ -10,7 +10,7 @@ local PlayerMouse = Player:GetMouse()
 
 local redzlib = {
 	Themes = {
-		默认 = {
+		Dark = {
 			["Color Hub 1"] = ColorSequence.new({
 				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(25, 25, 25)),
 				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(32.5, 32.5, 32.5)),
@@ -22,7 +22,7 @@ local redzlib = {
 			["Color Text"] = Color3.fromRGB(243, 243, 243),
 			["Color Dark Text"] = Color3.fromRGB(180, 180, 180)
 		},
-		红色 = {
+	    Red = {
 ["Color Hub 1"] = ColorSequence.new({
     ColorSequenceKeypoint.new(0.00, Color3.fromRGB(50, 20, 20)),     
     ColorSequenceKeypoint.new(0.50, Color3.fromRGB(100, 40, 40)),   
