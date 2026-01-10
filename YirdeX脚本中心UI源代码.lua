@@ -21,30 +21,6 @@ Darker = {
 ["Color Theme"] = Color3.fromRGB(100, 180, 255),  
 	["Color Text"] = Color3.fromRGB(220, 230, 255), 
 	["Color Dark Text"] = Color3.fromRGB(150, 170, 200)  
-		},
-	    Red = {
-["Color Hub 1"] = ColorSequence.new({
-    ColorSequenceKeypoint.new(0.00, Color3.fromRGB(50, 20, 20)),     
-    ColorSequenceKeypoint.new(0.50, Color3.fromRGB(100, 40, 40)),   
-    ColorSequenceKeypoint.new(1.00, Color3.fromRGB(50, 20, 20))
-}),
-["Color Hub 2"] = Color3.fromRGB(70, 25, 25),                        
-["Color Stroke"] = Color3.fromRGB(120, 40, 40),               
-["Color Theme"] = Color3.fromRGB(220, 60, 60),                  
-["Color Text"] = Color3.fromRGB(255, 210, 210),                      
-["Color Dark Text"] = Color3.fromRGB(180, 100, 100)                  
-		},
-		Purple = {
-			["Color Hub 1"] = ColorSequence.new({
-				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(30, 120, 80)),
-				ColorSequenceKeypoint.new(0.50, Color3.fromRGB(50, 160, 100)),
-				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(30, 120, 80))
-			}),
-			["Color Hub 2"] = Color3.fromRGB(40, 130, 90),
-			["Color Stroke"] = Color3.fromRGB(50, 140, 100),
-			["Color Theme"] = Color3.fromRGB(70, 180, 120),
-			["Color Text"] = Color3.fromRGB(240, 240, 240),
-			["Color Dark Text"] = Color3.fromRGB(180, 180, 180)
 		}
 	},
 	Info = {
