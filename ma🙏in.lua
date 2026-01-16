@@ -3982,7 +3982,7 @@ ac("UICorner",{
 CornerRadius=UDim.new(1,0)
 }),
 ac("UIStroke",{
-Thickness=3,
+Thickness=2,
 ApplyStrokeMode="Border",
 Color=Color3.new(1,1,1),
 Transparency=0,
@@ -4090,7 +4090,7 @@ OnlyIcon=ao.OnlyIcon or false,
 Draggable=ao.Draggable or nil,
 OnlyMobile=ao.OnlyMobile,
 CornerRadius=ao.CornerRadius or UDim.new(0,20),
-StrokeThickness=ao.StrokeThickness or 3,
+StrokeThickness=ao.StrokeThickness or 2,
 Color=ao.Color
 or ColorSequence.new(Color3.fromHex"4169E1",Color3.fromHex"00CED1"),
 }
