@@ -4090,7 +4090,7 @@ OnlyIcon=ao.OnlyIcon or false,
 Draggable=ao.Draggable or nil,
 OnlyMobile=ao.OnlyMobile,
 CornerRadius=ao.CornerRadius or UDim.new(0,20),
-StrokeThickness=ao.StrokeThickness or 2,
+StrokeThickness=ao.StrokeThickness or 3,
 Color=ao.Color
 or ColorSequence.new(Color3.fromHex"4169E1",Color3.fromHex"00CED1"),
 }
