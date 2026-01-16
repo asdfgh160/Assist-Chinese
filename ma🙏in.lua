@@ -3982,7 +3982,7 @@ ac("UICorner",{
 CornerRadius=UDim.new(1,0)
 }),
 ac("UIStroke",{
-Thickness=1,
+Thickness=2,
 ApplyStrokeMode="Border",
 Color=Color3.new(1,1,1),
 Transparency=0,
