@@ -2847,7 +2847,7 @@ Size=UDim2.fromScale(1,1),
 }),
 
 ac("ImageLabel",{
-Image="rbxassetid://9968344105",
+Image="rbxassetid://96049008506481",
 ImageTransparency=0.98,
 ScaleType=Enum.ScaleType.Tile,
 TileSize=UDim2.new(0,128,0,128),
@@ -2860,7 +2860,7 @@ CornerRadius=UDim.new(0,8),
 }),
 
 ac("ImageLabel",{
-Image="rbxassetid://9968344227",
+Image="rbxassetid://96049008506481",
 ImageTransparency=0.9,
 ScaleType=Enum.ScaleType.Tile,
 TileSize=UDim2.new(0,128,0,128),
