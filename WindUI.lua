@@ -3467,6 +3467,21 @@ end
 return aa end function a.u()
 return function(aa)
 return{
+金色={
+Name="金色",
+
+Accent=Color3.fromHex"#D4AF37",        
+Dialog=Color3.fromHex"#0F0C08",        
+Outline=Color3.fromHex"#FFD700",       
+Text=Color3.fromHex"#FFFFFF",          
+Placeholder=Color3.fromHex"#B8860B",  
+Background=Color3.fromHex"#1A150F",   
+Button=Color3.fromHex"#B8860B",       
+Icon=Color3.fromHex"#FFD700",          
+Toggle=Color3.fromHex"#FFD700",       
+Slider=Color3.fromHex"#D4AF37",        
+Checkbox=Color3.fromHex"#D4AF37",      
+},     
 Dark={
 Name="Dark",
 
