@@ -3470,17 +3470,17 @@ return{
 golden={
 Name="金色",
 
-Accent=Color3.fromHex"#FFD700",     
-Dialog=Color3.fromHex"#D4AF37",      
-Outline=Color3.fromHex"#FFE44D",    
-Text=Color3.fromHex"#FFD700",        
-Placeholder=Color3.fromHex"#B8860B", 
-Background=Color3.fromHex"#F0E68C",  
-Button=Color3.fromHex"#FFD700",    
-Icon=Color3.fromHex"#FFD700",       
-Toggle=Color3.fromHex"#FFD700",    
-Slider=Color3.fromHex"#FFD700",     
-Checkbox=Color3.fromHex"#FFD700",
+Accent=Color3.fromHex"#D4AF37",     
+Dialog=Color3.fromHex"#0F0C08",       
+Outline=Color3.fromHex"#FFD700",    
+Text=Color3.fromHex"#FFFFFF",        
+Placeholder=Color3.fromHex"#B8860B",   
+Background=Color3.fromHex"#1A150F",    
+Button=Color3.fromHex"#B8860B",        
+Icon=Color3.fromHex"#FFD700",        
+Toggle=Color3.fromHex"#FFD700",      
+Slider=Color3.fromHex"#D4AF37",       
+Checkbox=Color3.fromHex"#D4AF37",      
 },
 Ocean={
 Name="Ocean",
@@ -11172,7 +11172,7 @@ AutomaticSize="XY",
 BackgroundTransparency=1,
 },{
 am("TextLabel",{
-Text=au.User.Anonymous and"Anonymous"or ah.LocalPlayer.DisplayName,
+Text=game.Players.LocalPlayer.DisplayName,
 TextSize=17,
 ThemeTag={
 TextColor3="Text",
@@ -11186,7 +11186,7 @@ TextXAlignment="Left",
 Name="DisplayName"
 }),
 am("TextLabel",{
-Text=au.User.Anonymous and"anonymous"or ah.LocalPlayer.Name,
+Text=game.Players.LocalPlayer.Name,
 TextSize=15,
 TextTransparency=.6,
 ThemeTag={
@@ -11232,8 +11232,8 @@ function au.User.SetAnonymous(b,d)
 if d~=false then d=true end
 au.User.Anonymous=d
 aB.UserIcon.ImageLabel.Image=GetUserThumb()
-aB.UserIcon.Frame.DisplayName.Text=d and"Anonymous"or ah.LocalPlayer.DisplayName
-aB.UserIcon.Frame.UserName.Text=d and"anonymous"or ah.LocalPlayer.Name
+aB.UserIcon.Frame.DisplayName.Text=game.Players.LocalPlayer.DisplayName,
+aB.UserIcon.Frame.UserName.Text=game.Players.LocalPlayer.Name,
 end
 
 if au.User.Enabled then
@@ -11656,7 +11656,7 @@ G
 },true)
 
 am("Frame",{
-Size=UDim2.new(0,24,0,24),
+Size=UDim2.new(0,60,0,60),
 BackgroundTransparency=1,
 Parent=au.Topbar.ButtonsType~="Default"and au.UIElements.Main.Main.Topbar.Right or nil,
 LayoutOrder=A or 999
