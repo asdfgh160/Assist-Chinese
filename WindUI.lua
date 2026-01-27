@@ -3467,7 +3467,7 @@ end
 return aa end function a.u()
 return function(aa)
 return{
-金色={
+golden={
 Name="金色",
 
 Accent=Color3.fromHex"#D4AF37",        
