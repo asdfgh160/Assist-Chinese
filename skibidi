@@ -1,4 +1,12 @@
-local Translations = {
+-- 直接加载脚本
+loadstring(game:HttpGet("https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FoxnameHub.lua"))()
+
+-- 等待脚本加载
+task.wait(3)
+
+-- 简单汉化函数
+local function simpleChinese(text)
+    local translations = {
 ["Discord"] = "Discord",
 ["report bug at Discord"] = "在Discord反馈漏洞",
 ["UPDATE"] = "更新",
@@ -10,13 +18,13 @@ local Translations = {
 ["Add Instant Complete minigame Canva (bypass day)"] = "添加小游戏画布立即完成（跳过天数）",
 ["Fix Showcase plant"] = "修复展示植物功能",
 ["Fix fly now it has support for pc"] = "修复飞行功能，现已支持电脑端",
-["Developer"] = "汉化作者",
-["Cáo Mod"] = "YirdeX",
-["Dex and owner script"] = "by YirdeX",
-["Source - Most of the script is based on his script"] = "该脚本的一些信息",
-["Nova Hoang (Nguyễn Ngô Tấn Hoàng)"] = "Nova Hoang",
+["Developer"] = "开发者",
+["Cáo Mod"] = "Cáo 模组",
+["Dex and owner script"] = "Dex及原作者脚本",
+["Source - Most of the script is based on his script"] = "来源 - 本脚本大部分基于其脚本制作",
+["Nova Hoang (Nguyễn Ngô Tấn Hoàng)"] = "Nova Hoang（阮吴晋煌）",
 ["Owner Of Article Hub and Nihahaha Hub"] = "Article Hub和Nihahaha Hub的所有者",
-["Giang Hub (Giang)"] = "Giang Hub",
+["Giang Hub (Giang)"] = "Giang Hub（Giang）",
 ["Co-Owner Of Article Hub and Nihahaha Hub"] = "Article Hub和Nihahaha Hub的联合所有者",
 ["Kill Aura"] = "击杀光环",
 ["Kill Aura Range"] = "击杀光环范围",
@@ -81,10 +89,10 @@ local Translations = {
 ["Bring Tool"] = "携带工具",
 ["Bring selected Tool items"] = "携带选中的工具物品",
 ["Gun Section"] = "枪械类物品区",
-["Mental Section"] = "金属类物品区",
-["Select Mental"] = "选择金属类物品",
-["Bring Mental"] = "携带金属类物品",
-["Bring selected Mental items"] = "携带选中的金属类物品",
+["Mental Section"] = "精神类物品区",
+["Select Mental"] = "选择精神类物品",
+["Bring Mental"] = "携带精神类物品",
+["Bring selected Mental items"] = "携带选中的精神类物品",
 ["Food Section"] = "食物类物品区",
 ["Morsel"] = "小块食物",
 ["Cooked Morsel"] = "熟的小块食物",
@@ -238,55 +246,27 @@ local Translations = {
 ["Revolver"] = "左轮手枪",
 ["Revolver Ammo"] = "左轮手枪弹药",
 ["Rifle"] = "步枪"
-}
-
-local keys = {}
-for k in pairs(Translations) do
-    table.insert(keys, k)
-end
-table.sort(
-    keys,
-    function(a, b)
-        return #a > #b
-    end
-)
-
-local function safeReplace(text, old, new)
-    local result = ""
-    local start = 1
-    while true do
-        local i, j = string.find(text, old, start, true)
-        if not i then
-            result = result .. string.sub(text, start)
-            break
-        end
-        result = result .. string.sub(text, start, i - 1) .. new
-        start = j + 1
-    end
-    return result
+    }
+    
+    return translations[text] or text
 end
 
-local function translateText(text)
-    if not text or type(text) ~= "string" then
-        return text
+-- 简单替换UI文本
+task.spawn(function()
+    while task.wait(1) do
+        pcall(function()
+            -- 只处理屏幕上可见的文本
+            for _, gui in pairs(game:GetService("CoreGui"):GetDescendants()) do
+                if gui:IsA("TextLabel") or gui:IsA("TextButton") then
+                    local text = gui.Text
+                    local translated = simpleChinese(text)
+                    if translated ~= text then
+                        gui.Text = translated
+                    end
+                end
+            end
+        end)
     end
-    for _, k in ipairs(keys) do
-        text = safeReplace(text, k, Translations[k])
-    end
-    return text
-end
+end)
 
-local oldNewIndex
-oldNewIndex =
-    hookmetamethod(
-    game,
-    "__newindex",
-    function(self, key, value)
-        if key == "Text" and type(value) == "string" then
-            value = translateText(value)
-        end
-        return oldNewIndex(self, key, value)
-    end
-)
-
-loadstring(game:HttpGet("https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/FoxnameHub.lua"))()
+print("汉化已加载")
