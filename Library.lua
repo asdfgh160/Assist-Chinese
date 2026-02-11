@@ -7447,11 +7447,11 @@ function Library:CreateWindow(WindowInfo)
     end
 
     if Library.IsMobile then
-        local ToggleButton = Library:AddDraggableButton("Toggle", function()
+        local ToggleButton = Library:AddDraggableButton("打开脚本", function()
             Library:Toggle()
         end, true)
 
-        local LockButton = Library:AddDraggableButton("Lock", function(self)
+        local LockButton = Library:AddDraggableButton("锁定", function(self)
             Library.CantDragForced = not Library.CantDragForced
             self:SetText(Library.CantDragForced and "解除" or "锁定")
         end, true)
