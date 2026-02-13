@@ -382,37 +382,48 @@ do
 
         groupbox:AddDivider()
 
-        groupbox:AddDropdown("ThemeManager_ThemeList", { Text = "Theme list", Values = ThemesArray, Default = 1 })
-        groupbox:AddButton("Set as default", function()
-            self:SaveDefault(self.Library.Options.ThemeManager_ThemeList.Value)
-            self.Library:Notify(
-                string.format("Set default theme to %q", self.Library.Options.ThemeManager_ThemeList.Value)
-            )
-        end)
+        local ThemesArray = {}
+for Name, Theme in pairs(self.BuiltInThemes) do
+    table.insert(ThemesArray, Name)
+end
 
-        self.Library.Options.ThemeManager_ThemeList:OnChanged(function()
-            self:ApplyTheme(self.Library.Options.ThemeManager_ThemeList.Value)
-        end)
+table.sort(ThemesArray, function(a, b)
+    return self.BuiltInThemes[a][1] < self.BuiltInThemes[b][1]
+end)
 
-        groupbox:AddDivider()
+groupbox:AddDivider()
 
-        groupbox:AddInput("ThemeManager_CustomThemeName", { Text = "Custom theme name" })
-        groupbox:AddButton("Create theme", function()
-            local name = self.Library.Options.ThemeManager_CustomThemeName.Value
+groupbox:AddDropdown("ThemeManager_ThemeList", { Text = "主题列表", Values = ThemesArray, Default = 1 })
+groupbox:AddButton("设为默认", function()
+    self:SaveDefault(self.Library.Options.ThemeManager_ThemeList.Value)
+    self.Library:Notify(
+        string.format("已设置默认主题为 %q", self.Library.Options.ThemeManager_ThemeList.Value)
+    )
+end)
 
-            if name:gsub(" ", "") == "" then
-                self.Library:Notify("Invalid theme name (empty)", 2)
-                return
-            end
+self.Library.Options.ThemeManager_ThemeList:OnChanged(function()
+    self:ApplyTheme(self.Library.Options.ThemeManager_ThemeList.Value)
+end)
 
-            self:SaveCustomTheme(name)
+groupbox:AddDivider()
 
-            self.Library:Notify(string.format("Created theme %q", name))
-            self.Library.Options.ThemeManager_CustomThemeList:SetValues(self:ReloadCustomThemes())
-            self.Library.Options.ThemeManager_CustomThemeList:SetValue(nil)
-        end)
+groupbox:AddInput("ThemeManager_CustomThemeName", { Text = "自定义主题名称" })
+groupbox:AddButton("创建主题", function()
+    local name = self.Library.Options.ThemeManager_CustomThemeName.Value
 
-        groupbox:AddDivider()
+    if name:gsub(" ", "") == "" then
+        self.Library:Notify("无效的主题名称（为空）", 2)
+        return
+    end
+
+    self:SaveCustomTheme(name)
+
+    self.Library:Notify(string.format("已创建主题 %q", name))
+    self.Library.Options.ThemeManager_CustomThemeList:SetValues(self:ReloadCustomThemes())
+    self.Library.Options.ThemeManager_CustomThemeList:SetValue(nil)
+end)
+
+groupbox:AddDivider()
 
  groupbox:AddDropdown(
     "ThemeManager_CustomThemeList",
