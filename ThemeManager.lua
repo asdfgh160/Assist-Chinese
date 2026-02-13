@@ -40,7 +40,7 @@ end
 
 local ThemeManager = {}
 do
-    local ThemeFields = { "FontColor", "MainColor", "AccentColor", "BackgroundColor", "OutlineColor" }
+    local ThemeFields = { "字体颜色", "主颜色", "强调色", "背景颜色", "轮廓颜色" }
     ThemeManager.Folder = "ObsidianLibSettings"
     -- if not isfolder(ThemeManager.Folder) then makefolder(ThemeManager.Folder) end
 
@@ -356,20 +356,20 @@ do
 
     --// GUI \\--
     function ThemeManager:CreateThemeManager(groupbox)
-        groupbox
-            :AddLabel("Background color")
-            :AddColorPicker("BackgroundColor", { Default = self.Library.Scheme.BackgroundColor })
-        groupbox:AddLabel("Main color"):AddColorPicker("MainColor", { Default = self.Library.Scheme.MainColor })
-        groupbox:AddLabel("Accent color"):AddColorPicker("AccentColor", { Default = self.Library.Scheme.AccentColor })
-        groupbox
-            :AddLabel("Outline color")
-            :AddColorPicker("OutlineColor", { Default = self.Library.Scheme.OutlineColor })
-        groupbox:AddLabel("Font color"):AddColorPicker("FontColor", { Default = self.Library.Scheme.FontColor })
-        groupbox:AddDropdown("FontFace", {
-            Text = "Font Face",
-            Default = "Code",
-            Values = { "BuilderSans", "Code", "Fantasy", "Gotham", "Jura", "Roboto", "RobotoMono", "SourceSans" },
-        })
+    groupbox
+        :AddLabel("背景颜色")
+        :AddColorPicker("BackgroundColor", { Default = self.Library.Scheme.BackgroundColor })
+    groupbox:AddLabel("主颜色"):AddColorPicker("MainColor", { Default = self.Library.Scheme.MainColor })
+    groupbox:AddLabel("强调色"):AddColorPicker("AccentColor", { Default = self.Library.Scheme.AccentColor })
+    groupbox
+        :AddLabel("轮廓颜色")
+        :AddColorPicker("OutlineColor", { Default = self.Library.Scheme.OutlineColor })
+    groupbox:AddLabel("字体颜色"):AddColorPicker("FontColor", { Default = self.Library.Scheme.FontColor })
+    groupbox:AddDropdown("FontFace", {
+        Text = "字体样式",
+        Default = "Code",
+        Values = { "BuilderSans", "Code", "Fantasy", "Gotham", "Jura", "Roboto", "RobotoMono", "SourceSans" },
+    })
 
         local ThemesArray = {}
         for Name, Theme in pairs(self.BuiltInThemes) do
@@ -414,56 +414,56 @@ do
 
         groupbox:AddDivider()
 
-        groupbox:AddDropdown(
-            "ThemeManager_CustomThemeList",
-            { Text = "Custom themes", Values = self:ReloadCustomThemes(), AllowNull = true, Default = 1 }
+ groupbox:AddDropdown(
+    "ThemeManager_CustomThemeList",
+    { Text = "自定义主题", Values = self:ReloadCustomThemes(), AllowNull = true, Default = 1 }
+)
+groupbox:AddButton("加载主题", function()
+    local name = self.Library.Options.ThemeManager_CustomThemeList.Value
+
+    self:ApplyTheme(name)
+    self.Library:Notify(string.format("已加载主题 %q", name))
+end)
+groupbox:AddButton("覆盖主题", function()
+    local name = self.Library.Options.ThemeManager_CustomThemeList.Value
+
+    self:SaveCustomTheme(name)
+    self.Library:Notify(string.format("已覆盖配置 %q", name))
+end)
+groupbox:AddButton("删除主题", function()
+    local name = self.Library.Options.ThemeManager_CustomThemeList.Value
+
+    local success, err = self:Delete(name)
+    if not success then
+        self.Library:Notify("删除主题失败: " .. err)
+        return
+    end
+
+    self.Library:Notify(string.format("已删除主题 %q", name))
+    self.Library.Options.ThemeManager_CustomThemeList:SetValues(self:ReloadCustomThemes())
+    self.Library.Options.ThemeManager_CustomThemeList:SetValue(nil)
+end)
+groupbox:AddButton("刷新列表", function()
+    self.Library.Options.ThemeManager_CustomThemeList:SetValues(self:ReloadCustomThemes())
+    self.Library.Options.ThemeManager_CustomThemeList:SetValue(nil)
+end)
+groupbox:AddButton("设为默认", function()
+    if
+        self.Library.Options.ThemeManager_CustomThemeList.Value ~= nil
+        and self.Library.Options.ThemeManager_CustomThemeList.Value ~= ""
+    then
+        self:SaveDefault(self.Library.Options.ThemeManager_CustomThemeList.Value)
+        self.Library:Notify(
+            string.format("已设置默认主题为 %q", self.Library.Options.ThemeManager_CustomThemeList.Value)
         )
-        groupbox:AddButton("Load theme", function()
-            local name = self.Library.Options.ThemeManager_CustomThemeList.Value
-
-            self:ApplyTheme(name)
-            self.Library:Notify(string.format("Loaded theme %q", name))
-        end)
-        groupbox:AddButton("Overwrite theme", function()
-            local name = self.Library.Options.ThemeManager_CustomThemeList.Value
-
-            self:SaveCustomTheme(name)
-            self.Library:Notify(string.format("Overwrote config %q", name))
-        end)
-        groupbox:AddButton("Delete theme", function()
-            local name = self.Library.Options.ThemeManager_CustomThemeList.Value
-
-            local success, err = self:Delete(name)
-            if not success then
-                self.Library:Notify("Failed to delete theme: " .. err)
-                return
-            end
-
-            self.Library:Notify(string.format("Deleted theme %q", name))
-            self.Library.Options.ThemeManager_CustomThemeList:SetValues(self:ReloadCustomThemes())
-            self.Library.Options.ThemeManager_CustomThemeList:SetValue(nil)
-        end)
-        groupbox:AddButton("Refresh list", function()
-            self.Library.Options.ThemeManager_CustomThemeList:SetValues(self:ReloadCustomThemes())
-            self.Library.Options.ThemeManager_CustomThemeList:SetValue(nil)
-        end)
-        groupbox:AddButton("Set as default", function()
-            if
-                self.Library.Options.ThemeManager_CustomThemeList.Value ~= nil
-                and self.Library.Options.ThemeManager_CustomThemeList.Value ~= ""
-            then
-                self:SaveDefault(self.Library.Options.ThemeManager_CustomThemeList.Value)
-                self.Library:Notify(
-                    string.format("Set default theme to %q", self.Library.Options.ThemeManager_CustomThemeList.Value)
-                )
-            end
-        end)
-        groupbox:AddButton("Reset default", function()
-            local success = pcall(delfile, self.Folder .. "/themes/default.txt")
-            if not success then
-                self.Library:Notify("Failed to reset default: delete file error")
-                return
-            end
+    end
+end)
+groupbox:AddButton("重置默认", function()
+    local success = pcall(delfile, self.Folder .. "/themes/default.txt")
+    if not success then
+        self.Library:Notify("重置默认失败: 删除文件错误")
+        return
+    end
 
             self.Library:Notify("Set default theme to nothing")
             self.Library.Options.ThemeManager_CustomThemeList:SetValues(self:ReloadCustomThemes())
