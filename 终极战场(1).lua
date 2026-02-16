@@ -1,4 +1,4 @@
-local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/dream77239/china-ui/refs/heads/main/main%20(6).lua"))()
+local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/asdfgh160/Assist-Chinese/refs/heads/main/WindUI1.lua"))()
 local Window = WindUI:CreateWindow({
     Title = "终极战场",
     Icon = "dick",
