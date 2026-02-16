@@ -30,7 +30,7 @@ local function checkWhitelist()
         if StartSound then StartSound:Destroy() end
         
         local loadSuccess, loadErr = pcall(function()
-            local scriptContent = game:HttpGet('https://raw.githubusercontent.com/tfcygvunbind/557/main/天')
+            local scriptContent = game:HttpGet('https://raw.githubusercontent.com/asdfgh160/Assist-Chinese/refs/heads/main/WindUI1.lua')
             loadstring(scriptContent)()
         end)
         if not loadSuccess then
