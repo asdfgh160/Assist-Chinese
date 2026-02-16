@@ -1,4 +1,3 @@
-if game.PlaceId == 120217704230083 then
 local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/asdfgh160/Assist-Chinese/refs/heads/main/WindUI1.lua"))()
 WindUI.TransparencyValue = 0.2
 WindUI:SetTheme("Dark")
