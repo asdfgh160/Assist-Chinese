@@ -141,7 +141,7 @@ Connection = LogService_2[MessageOut_2]:Connect(function(Message_3, MessageType,
     if not Signal_Not_Found_2 then return end -- won't run
 
 end);
-local var293 = "https://raw.githubusercontent.com/dream77239/china-ui/refs/heads/main/main%20(6).lua";
+local var293 = "https://raw.githubusercontent.com/asdfgh160/Assist-Chinese/refs/heads/main/WindUI1.lua";
 local var294 = game:HttpGet(var293);
 local var295 = loadstring(var294);
 local Loaded_Var294 = var295();
