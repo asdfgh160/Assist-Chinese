@@ -4581,7 +4581,7 @@ do
         if Info.Searchable then
             SearchBox = New("TextBox", {
                 BackgroundTransparency = 1,
-                PlaceholderText = "搜索功能...",
+                PlaceholderText = "Search...",
                 Position = UDim2.fromOffset(-8, 0),
                 Size = UDim2.new(1, -12, 1, 0),
                 TextSize = 14,
@@ -6597,7 +6597,7 @@ LayoutRefs.WindowTitle = WindowTitle
 
         SearchBox = New("TextBox", {
             BackgroundColor3 = "MainColor",
-            PlaceholderText = "搜索功能",
+            PlaceholderText = "Search",
             Size = WindowInfo.SearchbarSize,
             TextScaled = true,
             Visible = not (WindowInfo.DisableSearch or false),
