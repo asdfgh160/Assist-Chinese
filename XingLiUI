@@ -1,0 +1,887 @@
+--[[
+	星璃UI - 轻量级界面库
+	作者：您的名字
+	版本：1.0.0
+	描述：优雅、简洁的Roblox UI框架，包含完整控件和主题系统
+]]
+
+local XingLiUI = {}
+
+-- 服务引用
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+local mouse = player:GetMouse()
+
+-- ========================= 内部工具函数 =========================
+local function createCorner(obj, radius)
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, radius or 6)
+	corner.Parent = obj
+	return corner
+end
+
+local function createStroke(obj, thickness, color)
+	local stroke = Instance.new("UIStroke")
+	stroke.Thickness = thickness or 1
+	stroke.Color = color or Color3.fromRGB(80, 80, 100)
+	stroke.Parent = obj
+	return stroke
+end
+
+local function hexFromRGB(color)
+	return string.format("#%02X%02X%02X", color.R * 255, color.G * 255, color.B * 255)
+end
+
+-- ========================= 窗口类 =========================
+function XingLiUI:CreateWindow(config)
+	config = config or {}
+	
+	-- 窗口对象
+	local window = {
+		-- 基础属性
+		Title = config.Title or "星璃UI",
+		Size = config.Size or UDim2.new(0, 550, 0, 400),
+		Position = config.Position or UDim2.new(0.5, -275, 0.5, -200),
+		
+		-- 功能开关
+		ShowClose = config.ShowClose ~= false,
+		ShowMinimize = config.ShowMinimize ~= false,
+		Draggable = config.Draggable ~= false,
+		
+		-- 主题设置
+		Theme = config.Theme or {
+			Background = Color3.fromRGB(25, 25, 35),      -- 主背景
+			Surface = Color3.fromRGB(35, 35, 45),         -- 表面背景
+			Primary = Color3.fromRGB(147, 112, 219),      -- 主色调（紫色）
+			Text = Color3.fromRGB(245, 245, 255),         -- 文字颜色
+			TextSecondary = Color3.fromRGB(180, 180, 200), -- 次要文字
+			Border = Color3.fromRGB(60, 60, 80),          -- 边框
+			CornerRadius = 8,                              -- 圆角大小
+		},
+		
+		-- 内部属性
+		Tabs = {},
+		CurrentTab = nil,
+		ScreenGui = nil,
+		MainFrame = nil,
+		ScrollingFrame = nil,
+	}
+	
+	-- 创建GUI
+	window.ScreenGui = Instance.new("ScreenGui")
+	window.ScreenGui.Name = "XingLiUI_" .. tostring(math.random(1000, 9999))
+	window.ScreenGui.Parent = CoreGui
+	window.ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+	window.ScreenGui.ResetOnSpawn = false
+	window.ScreenGui.DisplayOrder = 100
+	
+	-- 主窗口框架
+	window.MainFrame = Instance.new("Frame")
+	window.MainFrame.Name = "MainFrame"
+	window.MainFrame.Size = window.Size
+	window.MainFrame.Position = window.Position
+	window.MainFrame.BackgroundColor3 = window.Theme.Background
+	window.MainFrame.BorderSizePixel = 0
+	window.MainFrame.ClipsDescendants = true
+	window.MainFrame.Parent = window.ScreenGui
+	createCorner(window.MainFrame, window.Theme.CornerRadius)
+	createStroke(window.MainFrame, 2, window.Theme.Border)
+	
+	-- 标题栏
+	window.TitleBar = Instance.new("Frame")
+	window.TitleBar.Name = "TitleBar"
+	window.TitleBar.Size = UDim2.new(1, 0, 0, 40)
+	window.TitleBar.BackgroundColor3 = window.Theme.Surface
+	window.TitleBar.BorderSizePixel = 0
+	window.TitleBar.Parent = window.MainFrame
+	createCorner(window.TitleBar, window.Theme.CornerRadius)
+	
+	-- 标题文字
+	window.TitleText = Instance.new("TextLabel")
+	window.TitleText.Name = "TitleText"
+	window.TitleText.Size = UDim2.new(0, 200, 1, 0)
+	window.TitleText.Position = UDim2.new(0, 15, 0, 0)
+	window.TitleText.BackgroundTransparency = 1
+	window.TitleText.Text = window.Title
+	window.TitleText.TextColor3 = window.Theme.Text
+	window.TitleText.Font = Enum.Font.GothamSemibold
+	window.TitleText.TextSize = 16
+	window.TitleText.TextXAlignment = Enum.TextXAlignment.Left
+	window.TitleText.Parent = window.TitleBar
+	
+	-- 控制按钮容器
+	local controlFrame = Instance.new("Frame")
+	controlFrame.Name = "ControlButtons"
+	controlFrame.Size = UDim2.new(0, 80, 1, 0)
+	controlFrame.Position = UDim2.new(1, -90, 0, 0)
+	controlFrame.BackgroundTransparency = 1
+	controlFrame.Parent = window.TitleBar
+	
+	-- 最小化按钮
+	if window.ShowMinimize then
+		window.MinimizeBtn = Instance.new("ImageButton")
+		window.MinimizeBtn.Name = "MinimizeButton"
+		window.MinimizeBtn.Size = UDim2.new(0, 28, 0, 28)
+		window.MinimizeBtn.Position = UDim2.new(0, 0, 0.5, -14)
+		window.MinimizeBtn.BackgroundTransparency = 1
+		window.MinimizeBtn.Image = "rbxassetid://6031280882"
+		window.MinimizeBtn.ImageColor3 = window.Theme.Text
+		window.MinimizeBtn.Parent = controlFrame
+		
+		window.MinimizeBtn.MouseButton1Click:Connect(function()
+			window.MainFrame.Visible = not window.MainFrame.Visible
+		end)
+	end
+	
+	-- 关闭按钮
+	if window.ShowClose then
+		window.CloseBtn = Instance.new("ImageButton")
+		window.CloseBtn.Name = "CloseButton"
+		window.CloseBtn.Size = UDim2.new(0, 28, 0, 28)
+		window.CloseBtn.Position = UDim2.new(0, 40, 0.5, -14)
+		window.CloseBtn.BackgroundTransparency = 1
+		window.CloseBtn.Image = "rbxassetid://6031281785"
+		window.CloseBtn.ImageColor3 = Color3.fromRGB(255, 120, 120)
+		window.CloseBtn.Parent = controlFrame
+		
+		window.CloseBtn.MouseButton1Click:Connect(function()
+			window:Destroy()
+		end)
+	end
+	
+	-- 拖动功能
+	if window.Draggable then
+		local dragging = false
+		local dragStart, startPos
+		
+		window.TitleBar.InputBegan:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+				dragging = true
+				dragStart = input.Position
+				startPos = window.MainFrame.Position
+				input.Changed:Connect(function()
+					if input.UserInputState == Enum.UserInputState.End then
+						dragging = false
+					end
+				end)
+			end
+		end)
+		
+		local dragInput
+		window.TitleBar.InputChanged:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseMovement then
+				dragInput = input
+			end
+		end)
+		
+		UserInputService.InputChanged:Connect(function(input)
+			if input == dragInput and dragging then
+				local delta = input.Position - dragStart
+				window.MainFrame.Position = UDim2.new(
+					startPos.X.Scale, startPos.X.Offset + delta.X,
+					startPos.Y.Scale, startPos.Y.Offset + delta.Y
+				)
+			end
+		end)
+	end
+	
+	-- 标签页容器
+	window.TabContainer = Instance.new("Frame")
+	window.TabContainer.Name = "TabContainer"
+	window.TabContainer.Size = UDim2.new(1, 0, 0, 45)
+	window.TabContainer.Position = UDim2.new(0, 0, 0, 40)
+	window.TabContainer.BackgroundColor3 = window.Theme.Surface
+	window.TabContainer.BorderSizePixel = 0
+	window.TabContainer.Parent = window.MainFrame
+	
+	local tabLayout = Instance.new("UIListLayout")
+	tabLayout.FillDirection = Enum.FillDirection.Horizontal
+	tabLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
+	tabLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+	tabLayout.Padding = UDim.new(0, 8)
+	tabLayout.Parent = window.TabContainer
+	
+	local tabPadding = Instance.new("UIPadding")
+	tabPadding.PaddingLeft = UDim.new(0, 15)
+	tabPadding.Parent = window.TabContainer
+	
+	-- 内容区域
+	window.ContentFrame = Instance.new("Frame")
+	window.ContentFrame.Name = "ContentFrame"
+	window.ContentFrame.Size = UDim2.new(1, -20, 1, -105)
+	window.ContentFrame.Position = UDim2.new(0, 10, 0, 95)
+	window.ContentFrame.BackgroundColor3 = window.Theme.Surface
+	window.ContentFrame.BorderSizePixel = 0
+	window.ContentFrame.ClipsDescendants = true
+	window.ContentFrame.Parent = window.MainFrame
+	createCorner(window.ContentFrame, window.Theme.CornerRadius - 2)
+	
+	-- 滚动区域
+	window.ScrollingFrame = Instance.new("ScrollingFrame")
+	window.ScrollingFrame.Name = "ScrollingFrame"
+	window.ScrollingFrame.Size = UDim2.new(1, -10, 1, -10)
+	window.ScrollingFrame.Position = UDim2.new(0, 5, 0, 5)
+	window.ScrollingFrame.BackgroundTransparency = 1
+	window.ScrollingFrame.ScrollBarThickness = 6
+	window.ScrollingFrame.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 120)
+	window.ScrollingFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+	window.ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+	window.ScrollingFrame.Parent = window.ContentFrame
+	
+	window.UIList = Instance.new("UIListLayout")
+	window.UIList.Name = "UIList"
+	window.UIList.HorizontalAlignment = Enum.HorizontalAlignment.Left
+	window.UIList.VerticalAlignment = Enum.VerticalAlignment.Top
+	window.UIList.Padding = UDim.new(0, 10)
+	window.UIList.SortOrder = Enum.SortOrder.LayoutOrder
+	window.UIList.Parent = window.ScrollingFrame
+	
+	local contentPadding = Instance.new("UIPadding")
+	contentPadding.PaddingTop = UDim.new(0, 8)
+	contentPadding.PaddingBottom = UDim.new(0, 8)
+	contentPadding.Parent = window.ScrollingFrame
+	
+	-- 标签页字典
+	window.Tabs = {}
+	
+	-- ==================== 窗口方法 ====================
+	
+	-- 销毁窗口
+	function window:Destroy()
+		if self.ScreenGui then
+			self.ScreenGui:Destroy()
+		end
+	end
+	
+	-- 切换标签页
+	function window:SwitchTab(tabName)
+		self.CurrentTab = tabName
+		
+		-- 清空当前内容
+		for _, v in pairs(self.ScrollingFrame:GetChildren()) do
+			if v:IsA("GuiObject") and v ~= self.UIList and v ~= contentPadding then
+				v:Destroy()
+			end
+		end
+		
+		-- 高亮当前标签按钮
+		for name, tab in pairs(self.Tabs) do
+			if tab.Button then
+				tab.Button.BackgroundColor3 = (name == tabName) and self.Theme.Primary or self.Theme.Background
+				tab.Button.TextColor3 = (name == tabName) and Color3.new(1, 1, 1) or self.Theme.Text
+			end
+		end
+		
+		-- 触发标签页的OnShow回调
+		if self.Tabs[tabName] and self.Tabs[tabName].OnShow then
+			self.Tabs[tabName]:OnShow()
+		end
+	end
+	
+	-- 添加标签页
+	function window:AddTab(name)
+		local tab = {
+			Name = name,
+			Window = window,
+			Button = nil,
+			Elements = {},
+			OnShow = nil,
+		}
+		
+		-- 创建标签按钮
+		local tabBtn = Instance.new("TextButton")
+		tabBtn.Name = name .. "Tab"
+		tabBtn.Size = UDim2.new(0, 80, 0, 32)
+		tabBtn.BackgroundColor3 = window.Theme.Background
+		tabBtn.Text = name
+		tabBtn.TextColor3 = window.Theme.Text
+		tabBtn.Font = Enum.Font.Gotham
+		tabBtn.TextSize = 14
+		tabBtn.BorderSizePixel = 0
+		tabBtn.Parent = window.TabContainer
+		createCorner(tabBtn, window.Theme.CornerRadius - 3)
+		
+		tabBtn.MouseButton1Click:Connect(function()
+			window:SwitchTab(name)
+		end)
+		
+		tab.Button = tabBtn
+		window.Tabs[name] = tab
+		
+		-- 如果是第一个标签页，自动切换到它
+		if not window.CurrentTab then
+			window:SwitchTab(name)
+		end
+		
+		-- 返回标签页对象，用于添加控件
+		return tab
+	end
+	
+	-- ==================== 标签页方法 ====================
+	
+	-- 设置标签页显示时的回调
+	function tab:OnShow(callback)
+		self.OnShow = callback
+	end
+	
+	-- 创建标题
+	function tab:CreateTitle(text)
+		local title = Instance.new("TextLabel")
+		title.Size = UDim2.new(1, -10, 0, 24)
+		title.BackgroundTransparency = 1
+		title.Text = text
+		title.TextColor3 = self.Window.Theme.Primary
+		title.Font = Enum.Font.GothamSemibold
+		title.TextSize = 18
+		title.TextXAlignment = Enum.TextXAlignment.Left
+		title.Parent = self.Window.ScrollingFrame
+		
+		table.insert(self.Elements, title)
+		return title
+	end
+	
+	-- 创建分隔线
+	function tab:CreateSeparator()
+		local sep = Instance.new("Frame")
+		sep.Size = UDim2.new(1, -10, 0, 1)
+		sep.BackgroundColor3 = self.Window.Theme.Border
+		sep.BorderSizePixel = 0
+		sep.Parent = self.Window.ScrollingFrame
+		
+		table.insert(self.Elements, sep)
+		return sep
+	end
+	
+	-- 创建按钮
+	function tab:CreateButton(config)
+		config = config or {}
+		local text = config.Text or "按钮"
+		local disabled = config.Disabled or false
+		local callback = config.Callback or function() end
+		local width = config.Width or 120
+		
+		local btn = Instance.new("TextButton")
+		btn.Size = UDim2.new(0, width, 0, 32)
+		btn.BackgroundColor3 = self.Window.Theme.Primary
+		btn.Text = text
+		btn.TextColor3 = Color3.new(1, 1, 1)
+		btn.Font = Enum.Font.Gotham
+		btn.TextSize = 14
+		btn.AutoButtonColor = not disabled
+		btn.Parent = self.Window.ScrollingFrame
+		createCorner(btn, self.Window.Theme.CornerRadius - 3)
+		
+		if disabled then
+			btn.BackgroundColor3 = Color3.fromRGB(80, 80, 90)
+			btn.TextColor3 = Color3.fromRGB(160, 160, 170)
+			btn.Active = false
+		else
+			btn.MouseButton1Click:Connect(callback)
+		end
+		
+		table.insert(self.Elements, btn)
+		return btn
+	end
+	
+	-- 创建开关
+	function tab:CreateSwitch(config)
+		config = config or {}
+		local label = config.Label or "开关"
+		local default = config.Default or false
+		local callback = config.Callback or function() end
+		
+		local frame = Instance.new("Frame")
+		frame.Size = UDim2.new(1, -10, 0, 32)
+		frame.BackgroundTransparency = 1
+		frame.Parent = self.Window.ScrollingFrame
+		
+		local text = Instance.new("TextLabel")
+		text.Size = UDim2.new(0, 150, 1, 0)
+		text.BackgroundTransparency = 1
+		text.Text = label
+		text.TextColor3 = self.Window.Theme.Text
+		text.Font = Enum.Font.Gotham
+		text.TextSize = 14
+		text.TextXAlignment = Enum.TextXAlignment.Left
+		text.Parent = frame
+		
+		local switchBtn = Instance.new("TextButton")
+		switchBtn.Size = UDim2.new(0, 44, 0, 22)
+		switchBtn.Position = UDim2.new(0, 160, 0.5, -11)
+		switchBtn.BackgroundColor3 = default and self.Window.Theme.Primary or Color3.fromRGB(70, 70, 80)
+		switchBtn.Text = ""
+		switchBtn.AutoButtonColor = false
+		switchBtn.Parent = frame
+		createCorner(switchBtn, 11)
+		
+		local indicator = Instance.new("Frame")
+		indicator.Size = UDim2.new(0, 16, 0, 16)
+		indicator.Position = default and UDim2.new(0, 25, 0.5, -8) or UDim2.new(0, 3, 0.5, -8)
+		indicator.BackgroundColor3 = Color3.new(1, 1, 1)
+		indicator.Parent = switchBtn
+		createCorner(indicator, 8)
+		
+		local state = default
+		
+		local function setState(newState)
+			state = newState
+			switchBtn.BackgroundColor3 = state and self.Window.Theme.Primary or Color3.fromRGB(70, 70, 80)
+			indicator.Position = state and UDim2.new(0, 25, 0.5, -8) or UDim2.new(0, 3, 0.5, -8)
+			callback(state)
+		end
+		
+		switchBtn.MouseButton1Click:Connect(function()
+			setState(not state)
+		end)
+		
+		table.insert(self.Elements, frame)
+		return {
+			SetState = setState,
+			GetState = function() return state end,
+		}
+	end
+	
+	-- 创建滑块
+	function tab:CreateSlider(config)
+		config = config or {}
+		local label = config.Label or "滑块"
+		local min = config.Min or 0
+		local max = config.Max or 100
+		local default = config.Default or 50
+		local suffix = config.Suffix or ""
+		local callback = config.Callback or function() end
+		
+		local frame = Instance.new("Frame")
+		frame.Size = UDim2.new(1, -10, 0, 45)
+		frame.BackgroundTransparency = 1
+		frame.Parent = self.Window.ScrollingFrame
+		
+		local text = Instance.new("TextLabel")
+		text.Size = UDim2.new(0, 100, 0, 20)
+		text.BackgroundTransparency = 1
+		text.Text = label
+		text.TextColor3 = self.Window.Theme.Text
+		text.Font = Enum.Font.Gotham
+		text.TextSize = 14
+		text.TextXAlignment = Enum.TextXAlignment.Left
+		text.Parent = frame
+		
+		local valueLabel = Instance.new("TextLabel")
+		valueLabel.Size = UDim2.new(0, 60, 0, 20)
+		valueLabel.Position = UDim2.new(1, -70, 0, 0)
+		valueLabel.BackgroundTransparency = 1
+		valueLabel.Text = tostring(default) .. suffix
+		valueLabel.TextColor3 = self.Window.Theme.Primary
+		valueLabel.Font = Enum.Font.GothamSemibold
+		valueLabel.TextSize = 13
+		valueLabel.Parent = frame
+		
+		local slider = Instance.new("Frame")
+		slider.Size = UDim2.new(0, 250, 0, 4)
+		slider.Position = UDim2.new(0, 110, 0, 25)
+		slider.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+		slider.Parent = frame
+		createCorner(slider, 2)
+		
+		local fill = Instance.new("Frame")
+		fill.Size = UDim2.new((default - min) / (max - min), 0, 1, 0)
+		fill.BackgroundColor3 = self.Window.Theme.Primary
+		fill.BorderSizePixel = 0
+		fill.Parent = slider
+		createCorner(fill, 2)
+		
+		local button = Instance.new("ImageButton")
+		button.Size = UDim2.new(0, 14, 0, 14)
+		button.Position = UDim2.new((default - min) / (max - min), -7, 0.5, -7)
+		button.BackgroundColor3 = self.Window.Theme.Primary
+		button.Image = "rbxassetid://3570695787"
+		button.ScaleType = Enum.ScaleType.Fit
+		button.Parent = slider
+		
+		local dragging = false
+		local value = default
+		
+		local function updateFromMouse()
+			local pos = mouse.X - slider.AbsolutePosition.X
+			local width = slider.AbsoluteSize.X
+			local p = math.clamp(pos / width, 0, 1)
+			button.Position = UDim2.new(p, -7, 0.5, -7)
+			fill.Size = UDim2.new(p, 0, 1, 0)
+			value = min + p * (max - min)
+			valueLabel.Text = math.floor(value * 10) / 10 .. suffix
+			callback(value)
+		end
+		
+		button.MouseButton1Down:Connect(function()
+			dragging = true
+		end)
+		
+		UserInputService.InputEnded:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+				dragging = false
+			end
+		end)
+		
+		local connection
+		connection = RunService.RenderStepped:Connect(function()
+			if dragging then
+				updateFromMouse()
+			end
+		end)
+		
+		frame.AncestryChanged:Connect(function()
+			if not frame.Parent then
+				connection:Disconnect()
+			end
+		end)
+		
+		table.insert(self.Elements, frame)
+		return {
+			SetValue = function(newValue)
+				value = math.clamp(newValue, min, max)
+				local p = (value - min) / (max - min)
+				button.Position = UDim2.new(p, -7, 0.5, -7)
+				fill.Size = UDim2.new(p, 0, 1, 0)
+				valueLabel.Text = math.floor(value * 10) / 10 .. suffix
+			end,
+			GetValue = function() return value end,
+		}
+	end
+	
+	-- 创建输入框
+	function tab:CreateInput(config)
+		config = config or {}
+		local label = config.Label or "输入框"
+		local placeholder = config.Placeholder or ""
+		local default = config.Default or ""
+		local callback = config.Callback or function() end
+		
+		local frame = Instance.new("Frame")
+		frame.Size = UDim2.new(1, -10, 0, 35)
+		frame.BackgroundTransparency = 1
+		frame.Parent = self.Window.ScrollingFrame
+		
+		local text = Instance.new("TextLabel")
+		text.Size = UDim2.new(0, 100, 1, 0)
+		text.BackgroundTransparency = 1
+		text.Text = label
+		text.TextColor3 = self.Window.Theme.Text
+		text.Font = Enum.Font.Gotham
+		text.TextSize = 14
+		text.TextXAlignment = Enum.TextXAlignment.Left
+		text.Parent = frame
+		
+		local box = Instance.new("TextBox")
+		box.Size = UDim2.new(0, 180, 0, 28)
+		box.Position = UDim2.new(0, 110, 0.5, -14)
+		box.BackgroundColor3 = self.Window.Theme.Background
+		box.PlaceholderText = placeholder
+		box.PlaceholderColor3 = self.Window.Theme.TextSecondary
+		box.Text = default
+		box.TextColor3 = self.Window.Theme.Text
+		box.Font = Enum.Font.Gotham
+		box.TextSize = 13
+		box.ClearTextOnFocus = false
+		box.Parent = frame
+		createCorner(box, self.Window.Theme.CornerRadius - 3)
+		createStroke(box, 1, self.Window.Theme.Border)
+		
+		box.FocusLost:Connect(function()
+			callback(box.Text)
+		end)
+		
+		table.insert(self.Elements, frame)
+		return {
+			SetText = function(newText) box.Text = newText end,
+			GetText = function() return box.Text end,
+		}
+	end
+	
+	-- 创建下拉框
+	function tab:CreateDropdown(config)
+		config = config or {}
+		local label = config.Label or "下拉框"
+		local options = config.Options or {"选项1", "选项2", "选项3"}
+		local default = config.Default or options[1]
+		local disabled = config.Disabled or {}
+		local callback = config.Callback or function() end
+		
+		local frame = Instance.new("Frame")
+		frame.Size = UDim2.new(1, -10, 0, 35)
+		frame.BackgroundTransparency = 1
+		frame.Parent = self.Window.ScrollingFrame
+		
+		local text = Instance.new("TextLabel")
+		text.Size = UDim2.new(0, 100, 1, 0)
+		text.BackgroundTransparency = 1
+		text.Text = label
+		text.TextColor3 = self.Window.Theme.Text
+		text.Font = Enum.Font.Gotham
+		text.TextSize = 14
+		text.TextXAlignment = Enum.TextXAlignment.Left
+		text.Parent = frame
+		
+		local dropBtn = Instance.new("TextButton")
+		dropBtn.Size = UDim2.new(0, 140, 0, 28)
+		dropBtn.Position = UDim2.new(0, 110, 0.5, -14)
+		dropBtn.BackgroundColor3 = self.Window.Theme.Background
+		dropBtn.Text = default
+		dropBtn.TextColor3 = self.Window.Theme.Text
+		dropBtn.Font = Enum.Font.Gotham
+		dropBtn.TextSize = 13
+		dropBtn.Parent = frame
+		createCorner(dropBtn, self.Window.Theme.CornerRadius - 3)
+		createStroke(dropBtn, 1, self.Window.Theme.Border)
+		
+		local dropdownList = Instance.new("Frame")
+		dropdownList.Size = UDim2.new(0, 140, 0, #options * 28)
+		dropdownList.Position = UDim2.new(0, 110, 0, 28)
+		dropdownList.BackgroundColor3 = self.Window.Theme.Background
+		dropdownList.Visible = false
+		dropdownList.ZIndex = 10
+		dropdownList.Parent = frame
+		createCorner(dropdownList, self.Window.Theme.CornerRadius - 3)
+		createStroke(dropdownList, 1, self.Window.Theme.Border)
+		
+		local listLayout = Instance.new("UIListLayout")
+		listLayout.Parent = dropdownList
+		
+		for i, option in ipairs(options) do
+			local optBtn = Instance.new("TextButton")
+			optBtn.Size = UDim2.new(1, 0, 0, 28)
+			optBtn.BackgroundColor3 = self.Window.Theme.Background
+			optBtn.Text = option
+			optBtn.TextColor3 = self.Window.Theme.Text
+			optBtn.Font = Enum.Font.Gotham
+			optBtn.TextSize = 13
+			optBtn.ZIndex = 11
+			optBtn.Parent = dropdownList
+			
+			if disabled[i] then
+				optBtn.TextColor3 = self.Window.Theme.TextSecondary
+				optBtn.Active = false
+				optBtn.AutoButtonColor = false
+			else
+				optBtn.MouseButton1Click:Connect(function()
+					dropBtn.Text = option
+					dropdownList.Visible = false
+					callback(option, i)
+				end)
+			end
+		end
+		
+		dropBtn.MouseButton1Click:Connect(function()
+			dropdownList.Visible = not dropdownList.Visible
+		end)
+		
+		-- 点击其他地方关闭下拉框
+		UserInputService.InputBegan:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+				local pos = UserInputService:GetMouseLocation()
+				local absPos = dropdownList.AbsolutePosition
+				local absSize = dropdownList.AbsoluteSize
+				if pos.X < absPos.X or pos.X > absPos.X + absSize.X or pos.Y < absPos.Y or pos.Y > absPos.Y + absSize.Y then
+					dropdownList.Visible = false
+				end
+			end
+		end)
+		
+		table.insert(self.Elements, frame)
+		return {
+			SetSelected = function(option)
+				dropBtn.Text = option
+			end,
+			GetSelected = function() return dropBtn.Text end,
+		}
+	end
+	
+	-- 创建颜色选择器
+	function tab:CreateColorPicker(config)
+		config = config or {}
+		local label = config.Label or "颜色"
+		local default = config.Default or Color3.fromRGB(147, 112, 219)
+		local callback = config.Callback or function() end
+		
+		local frame = Instance.new("Frame")
+		frame.Size = UDim2.new(1, -10, 0, 35)
+		frame.BackgroundTransparency = 1
+		frame.Parent = self.Window.ScrollingFrame
+		
+		local text = Instance.new("TextLabel")
+		text.Size = UDim2.new(0, 100, 1, 0)
+		text.BackgroundTransparency = 1
+		text.Text = label
+		text.TextColor3 = self.Window.Theme.Text
+		text.Font = Enum.Font.Gotham
+		text.TextSize = 14
+		text.TextXAlignment = Enum.TextXAlignment.Left
+		text.Parent = frame
+		
+		local colorBtn = Instance.new("ImageButton")
+		colorBtn.Size = UDim2.new(0, 50, 0, 24)
+		colorBtn.Position = UDim2.new(0, 110, 0.5, -12)
+		colorBtn.BackgroundColor3 = default
+		colorBtn.Image = ""
+		colorBtn.AutoButtonColor = false
+		colorBtn.Parent = frame
+		createCorner(colorBtn, 4)
+		
+		local hexLabel = Instance.new("TextLabel")
+		hexLabel.Size = UDim2.new(0, 70, 1, 0)
+		hexLabel.Position = UDim2.new(0, 170, 0, 0)
+		hexLabel.BackgroundTransparency = 1
+		hexLabel.Text = hexFromRGB(default)
+		hexLabel.TextColor3 = self.Window.Theme.TextSecondary
+		hexLabel.Font = Enum.Font.Gotham
+		hexLabel.TextSize = 12
+		hexLabel.TextXAlignment = Enum.TextXAlignment.Left
+		hexLabel.Parent = frame
+		
+		-- 使用ColorPicker对话框
+		colorBtn.MouseButton1Click:Connect(function()
+			local dialog = Instance.new("ColorPicker")
+			dialog.Title = "选择颜色"
+			dialog.Color = colorBtn.BackgroundColor3
+			dialog.Parent = self.Window.ScreenGui
+			
+			dialog.Changed:Connect(function()
+				colorBtn.BackgroundColor3 = dialog.Color
+				hexLabel.Text = hexFromRGB(dialog.Color)
+				callback(dialog.Color)
+			end)
+		end)
+		
+		table.insert(self.Elements, frame)
+		return {
+			SetColor = function(newColor)
+				colorBtn.BackgroundColor3 = newColor
+				hexLabel.Text = hexFromRGB(newColor)
+			end,
+		}
+	end
+	
+	-- 创建复选框
+	function tab:CreateCheckbox(config)
+		config = config or {}
+		local label = config.Label or "复选框"
+		local default = config.Default or false
+		local callback = config.Callback or function() end
+		
+		local frame = Instance.new("Frame")
+		frame.Size = UDim2.new(1, -10, 0, 30)
+		frame.BackgroundTransparency = 1
+		frame.Parent = self.Window.ScrollingFrame
+		
+		local check = Instance.new("ImageButton")
+		check.Size = UDim2.new(0, 18, 0, 18)
+		check.Position = UDim2.new(0, 0, 0.5, -9)
+		check.BackgroundColor3 = self.Window.Theme.Background
+		check.Image = default and "rbxassetid://6031282222" or ""
+		check.ScaleType = Enum.ScaleType.Fit
+		check.Parent = frame
+		createCorner(check, 3)
+		createStroke(check, 1, self.Window.Theme.Border)
+		
+		local text = Instance.new("TextLabel")
+		text.Size = UDim2.new(0, 200, 1, 0)
+		text.Position = UDim2.new(0, 25, 0, 0)
+		text.BackgroundTransparency = 1
+		text.Text = label
+		text.TextColor3 = self.Window.Theme.Text
+		text.Font = Enum.Font.Gotham
+		text.TextSize = 14
+		text.TextXAlignment = Enum.TextXAlignment.Left
+		text.Parent = frame
+		
+		local checked = default
+		
+		check.MouseButton1Click:Connect(function()
+			checked = not checked
+			check.Image = checked and "rbxassetid://6031282222" or ""
+			callback(checked)
+		end)
+		
+		table.insert(self.Elements, frame)
+		return {
+			SetChecked = function(newState)
+				checked = newState
+				check.Image = checked and "rbxassetid://6031282222" or ""
+			end,
+			GetChecked = function() return checked end,
+		}
+	end
+	
+	-- 创建标签
+	function tab:CreateLabel(config)
+		config = config or {}
+		local text = config.Text or "标签"
+		local color = config.Color or self.Window.Theme.Text
+		local size = config.Size or 14
+		
+		local label = Instance.new("TextLabel")
+		label.Size = UDim2.new(1, -10, 0, 20)
+		label.BackgroundTransparency = 1
+		label.Text = text
+		label.TextColor3 = color
+		label.Font = Enum.Font.Gotham
+		label.TextSize = size
+		label.TextXAlignment = Enum.TextXAlignment.Left
+		label.Parent = self.Window.ScrollingFrame
+		
+		table.insert(self.Elements, label)
+		return {
+			SetText = function(newText) label.Text = newText end,
+			SetColor = function(newColor) label.TextColor3 = newColor end,
+		}
+	end
+	
+	-- 创建通知
+	function tab:CreateNotification(config)
+		config = config or {}
+		local message = config.Message or "通知消息"
+		local duration = config.Duration or 3
+		local type = config.Type or "info" -- info, success, warning, error
+		
+		local colors = {
+			info = self.Window.Theme.Primary,
+			success = Color3.fromRGB(80, 200, 120),
+			warning = Color3.fromRGB(240, 180, 60),
+			error = Color3.fromRGB(220, 80, 80),
+		}
+		
+		local notif = Instance.new("TextButton")
+		notif.Size = UDim2.new(1, -10, 0, 36)
+		notif.BackgroundColor3 = colors[type] or colors.info
+		notif.Text = message
+		notif.TextColor3 = Color3.new(1, 1, 1)
+		notif.Font = Enum.Font.Gotham
+		notif.TextSize = 14
+		notif.Parent = self.Window.ScrollingFrame
+		notif.AutoButtonColor = false
+		createCorner(notif, self.Window.Theme.CornerRadius - 3)
+		
+		-- 自动消失
+		task.delay(duration, function()
+			if notif and notif.Parent then
+				notif:Destroy()
+			end
+		end)
+		
+		-- 点击手动关闭
+		notif.MouseButton1Click:Connect(function()
+			notif:Destroy()
+		end)
+		
+		return notif
+	end
+	
+	return window
+end
+
+-- ========================= 返回库 =========================
+return XingLiUI
